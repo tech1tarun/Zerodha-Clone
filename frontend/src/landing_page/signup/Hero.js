@@ -22,8 +22,9 @@ const Hero = () => {
           <p className="text-muted fw-medium">
             Or track your existing application
           </p>
-
           <OTPLogin />
+          <p className="mt-4 fs-6">By proceeding, you agree to the Zerodha terms & privacy policy</p>
+          <p className="mt-4 fs-6">Looking to open NRI account? Click here</p>
         </div>
       </div>
     </div>
