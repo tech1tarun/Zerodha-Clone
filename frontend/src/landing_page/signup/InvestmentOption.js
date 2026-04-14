@@ -2,7 +2,7 @@ import React from "react";
 
 const InvestmentOption = () => {
   return (
-    <div className="container">
+    <div className="container mb-5">
       <div className="row text-center">
         <h2 className="fs-3 m-5">
           Investment options with Zerodha demat account{" "}
@@ -61,8 +61,8 @@ const InvestmentOption = () => {
           </div>
         </div>
       </div>
-      <div className="row d-flex justify-content-center mt-4">
-        <button className="btn btn-primary px-5 py-3 fw-semibold rounded w-25 mt-5">Explore Investment</button>
+      <div className="row d-flex justify-content-center mt-4 ">
+        <button className="btn btn-primary px-5 py-3 fw-semibold rounded w-25 mt-5 mb-5">Explore Investment</button>
       </div>
     </div>
   );
