@@ -14,6 +14,7 @@ app.use(bodyParser.json());
 const { HoldingsModel } = require("./model/HoldingsModel");
 const { PositionsModel } = require("./model/PositionsModel");
 const { OrdersModel } = require("./model/OrdersModel");
+const { OtpModel } = require("./model/OtpModel");
 
 //It will import Port from .env or it will be 3002
 const PORT = process.env.PORT || 3002;
@@ -198,7 +199,7 @@ app.get("/allPositions", async (req, res) => {
 
 app.get("/allOrders", async (req, res) => {
   let allOrders = await OrdersModel.find({});
-  res.json(allOrders); 
+  res.json(allOrders);
 });
 
 app.post("/neworder", async (req, res) => {
@@ -210,6 +211,47 @@ app.post("/neworder", async (req, res) => {
   });
   newOrder.save();
   res.send("Order Saved");
+});
+
+app.post("/auth/send-otp", async (req, res) => {
+  const { mobile } = req.body;
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  await OtpModel.findOneAndUpdate(
+    { mobile },
+    {
+      mobile,
+      otp,
+      expiresAt: new Date(Date.now() + 5 * 60 * 1000),
+    },
+    { upsert: true, new: true },
+  );
+
+  console.log(`OTP for ${mobile}: ${otp}`);
+
+  res.json({ message: "OTP sent successfully" });
+});
+
+app.post("/auth/verify-otp", async (req, res) => {
+  const { mobile, otp } = req.body;
+
+  const otpDoc = await OtpModel.findOne({ mobile, otp });
+
+  if (!otpDoc) {
+    return res.status(400).json({ message: "Invalid OTP" });
+  }
+
+  if (otpDoc.expiresAt < new Date()) {
+    return res.status(400).json({ message: "OTP expired" });
+  }
+
+  await OtpModel.deleteOne({ _id: otpDoc._id });
+
+  res.json({
+    message: "OTP verified successfully",
+    token: "dummy-jwt-token",
+  });
 });
 
 app.listen(PORT, () => {
