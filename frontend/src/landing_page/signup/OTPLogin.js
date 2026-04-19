@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const OTPLogin = () => {
+  const navigate = useNavigate();
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
@@ -63,7 +65,10 @@ const OTPLogin = () => {
       if (!res.ok) throw new Error(data.message || "Invalid OTP");
 
       localStorage.setItem("token", data.token);
-      setSuccess("OTP verified successfully.");
+      setSuccess("OTP verified successfully. Redirecting...");
+      setTimeout(() => {
+        navigate("/register");
+      }, 1000);
     } catch (err) {
       setError(err.message);
       setSuccess("");
