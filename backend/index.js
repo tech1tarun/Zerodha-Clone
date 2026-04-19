@@ -7,14 +7,23 @@ const mongoose = require("mongoose");
 const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const authRoute = require("./Routes/AuthRoute");
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "http://localhost:3001", "http://localhost:5173", "http://localhost:5174"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 app.use(bodyParser.json());
+app.use(cookieParser());
 
-const { HoldingsModel } = require("./model/HoldingsModel");
-const { PositionsModel } = require("./model/PositionsModel");
-const { OrdersModel } = require("./model/OrdersModel");
-const { OtpModel } = require("./model/OtpModel");
+const { HoldingsModel } = require("./Models/HoldingsModel");
+const { PositionsModel } = require("./Models/PositionsModel");
+const { OrdersModel } = require("./Models/OrdersModel");
+const { OtpModel } = require("./Models/OtpModel");
 
 //It will import Port from .env or it will be 3002
 const PORT = process.env.PORT || 3002;
@@ -253,6 +262,8 @@ app.post("/auth/verify-otp", async (req, res) => {
     token: "dummy-jwt-token",
   });
 });
+
+app.use("/auth", authRoute);
 
 app.listen(PORT, () => {
   console.log("App started");
